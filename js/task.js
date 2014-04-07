@@ -22,6 +22,7 @@ function Vessel(name, position, capacity) {
  * @name Vessel.report
  */
 Vessel.prototype.report = function () {
+	
 	return 'Корабль "' + this.name + '". Местоположение: ' + this.position.join() + '. Занято: ' + this.cargoWeight + ' из ' + this.capacity + 'т.</br>';
 }
 
@@ -30,6 +31,7 @@ Vessel.prototype.report = function () {
  * @name Vessel.getFreeSpace
  */
 Vessel.prototype.getFreeSpace = function () {
+	
 	return this.capacity - this.cargoWeight;
 }
 
@@ -38,6 +40,7 @@ Vessel.prototype.getFreeSpace = function () {
  * @name Vessel.getOccupiedSpace
  */
 Vessel.prototype.getOccupiedSpace = function () {
+	
 	return this.cargoWeight;
 }
 
@@ -72,13 +75,12 @@ function Planet(name, position, availableAmountOfCargo) {
  * @name Planet.report
  */
 Planet.prototype.report = function () {
-	cargoState = '';
-	if (this.availableAmountOfCargo > 0){
-		cargoState = cargoState + 'Доступно груза: ' + this.availableAmountOfCargo + 'т.';
-	}
-	else{
+	var cargoState = '';
+
+	this.availableAmountOfCargo > 0 ?
+		cargoState = cargoState + 'Доступно груза: ' + this.availableAmountOfCargo + 'т.' :		
 		cargoState = cargoState + 'Груза нет. ';
-	}
+
 	return 'Планета "' + this.name + '". Местоположение: ' + this.position.join() + '. ' + cargoState + '</br>';
 }
 
@@ -87,59 +89,52 @@ Planet.prototype.report = function () {
  * @name Vessel.getAvailableAmountOfCargo
  */
 Planet.prototype.getAvailableAmountOfCargo = function () {
+	
 	return this.availableAmountOfCargo;
 }
 
 /**
  * Загружает на корабль заданное количество груза.
- * 
  * Перед загрузкой корабль должен приземлиться на планету.
  * @param {Vessel} vessel Загружаемый корабль.
  * @param {Number} cargoWeight Вес загружаемого груза.
  * @name Vessel.loadCargoTo
  */
 Planet.prototype.loadCargoTo = function (vessel, cargoWeight) {
-	if (vessel.position[0] == this.position[0] && vessel.position[1] == this.position[1]){
-		if (vessel.getFreeSpace() >= cargoWeight) {
-			vessel.cargoWeight = vessel.cargoWeight + cargoWeight;
-			this.availableAmountOfCargo = this.availableAmountOfCargo - cargoWeight;
-			return 'погрузка завершена</br>';
-		}
-		else{
-			//грузим сколько можем
-			this.availableAmountOfCargo = this.availableAmountOfCargo - vessel.getFreeSpace();
-			vessel.cargoWeight = vessel.capacity;
-			return 'Не хватает груза. Загрузим только ' + vessel.getFreeSpace() + ' т.<br/>';
-		}
-	}
-	else{
-		return 'Сначала нужно подлететь к планете</br>';
+	if (!(vessel.position[0] == this.position[0] && vessel.position[1] == this.position[1])) { return 'Сначала нужно подлететь к планете</br>' };
+
+	if (vessel.getFreeSpace() >= cargoWeight) {
+		vessel.cargoWeight = vessel.cargoWeight + cargoWeight;
+		this.availableAmountOfCargo = this.availableAmountOfCargo - cargoWeight;
+		
+		return 'погрузка завершена</br>';
+	} else {
+		this.availableAmountOfCargo = this.availableAmountOfCargo - vessel.getFreeSpace();
+		vessel.cargoWeight = vessel.capacity;
+		
+		return 'Не хватает груза. Загрузим только ' + vessel.getFreeSpace() + ' т.<br/>';
 	}
 }
 
 /**
  * Выгружает с корабля заданное количество груза.
- * 
  * Перед выгрузкой корабль должен приземлиться на планету.
  * @param {Vessel} vessel Разгружаемый корабль.
  * @param {Number} cargoWeight Вес выгружаемого груза.
  * @name Vessel.unloadCargoFrom 
  */
 Planet.prototype.unloadCargoFrom = function (vessel, cargoWeight) {
-	if (vessel.position[0] == this.position[0] && vessel.position[1] == this.position[1]){
-		if (vessel.getOccupiedSpace() >= cargoWeight) {
-			vessel.cargoWeight = vessel.cargoWeight - cargoWeight;
-			this.availableAmountOfCargo = this.availableAmountOfCargo + cargoWeight;
-			return 'сброс груза завершен</br>';
-		}
-		else{
-			//разгружаем все что есть
-			this.availableAmountOfCargo = this.availableAmountOfCargo + vessel.getOccupiedSpace();
-			vessel.cargoWeight = 0;
-			return 'Нет столько груза. Сгрузим только ' + vessel.getOccupiedSpace() + ' т.</br>';
-		}
-	}
-	else{
-		return 'Сначала нужно подлететь к планете</br>';
+	if (!(vessel.position[0] == this.position[0] && vessel.position[1] == this.position[1])) { return 'Сначала нужно подлететь к планете</br>' };
+
+	if (vessel.getOccupiedSpace() >= cargoWeight) {
+		vessel.cargoWeight = vessel.cargoWeight - cargoWeight;
+		this.availableAmountOfCargo = this.availableAmountOfCargo + cargoWeight;
+		
+		return 'сброс груза завершен</br>';
+	} else {
+		this.availableAmountOfCargo = this.availableAmountOfCargo + vessel.getOccupiedSpace();
+		vessel.cargoWeight = 0;
+		
+		return 'Нет столько груза. Сгрузим только ' + vessel.getOccupiedSpace() + ' т.</br>';
 	}
 }
