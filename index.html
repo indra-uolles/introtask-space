@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Вступительное задание в ШРИ</title>
+<meta charset="utf-8">
+</head>
+<body>
+<h3>Бортовой журнал</h3>
+<div class="content"></div>
+</body>
+<script src="js/jquery-2.1.0.min.js"></script>
+<script src="js/task.js"></script>
+<script>
+	$(document).ready(function() {
+	    var vessel = new Vessel('Яндекс', [0,0], 1000),
+	    	planetA = new Planet('A', [0,0], 0),
+	    	planetB = new Planet('B', [100, 100], 5000),
+	    	$content = $('.content');
+
+		$content.append(vessel.report()); 
+	 	$content.append(planetA.report()); 
+	 	$content.append(planetB.report()); 
+
+	 	$content.append('отправляем корабль к планете "B"<br>');
+		vessel.flyTo(planetB);
+		$content.append('берем груз с планеты "B" - все, что можем<br>');
+		$content.append(planetB.loadCargoTo(vessel, 1000));
+	 	$content.append(vessel.report()); 
+
+	 	$content.append('отправляем корабль к планете "A"<br>');
+		vessel.flyTo(planetA);
+		$content.append('сбрасываем груз на планету "A" - 500 т.<br>');
+		planetA.unloadCargoFrom(vessel, 500);
+		$content.append(vessel.report()); 
+
+		$content.append('проверяем состояние планет "A" и "B"<br>');
+		$content.append(planetA.report()); 
+		$content.append(planetB.report()); 
+	});
+</script>
+</html>
