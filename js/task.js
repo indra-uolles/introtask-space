@@ -132,7 +132,7 @@ Planet.prototype.unloadCargoFrom = function (vessel, cargoWeight) {
 		
 		return 'сброс груза завершен</br>';
 	} else {
-		this.availableAmountOfCargo = this.availableAmountOfCargo + vessel.getOccupiedSpace();
+		this.availableAmountOfCargo = this.availableAmountOfCargo + vessel.getOccupiedSpace();	
 		vessel.cargoWeight = 0;
 		
 		return 'Нет столько груза. Сгрузим только ' + vessel.getOccupiedSpace() + ' т.</br>';
